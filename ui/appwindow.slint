@@ -1,0 +1,93 @@
+import { CheckBox,VerticalBox,LineEdit,ListView, Button, ComboBox, StandardListView} from "std-widgets.slint";
+
+export component AppWindow inherits Window 
+{
+    callback request-increase-value();
+    
+   
+    max-width: 950px;
+    min-width:830px;
+    preferred-height: 400px;
+    VerticalLayout
+    {
+        HorizontalLayout 
+        {
+            Button 
+             {
+               
+             }
+            Button 
+             {
+                
+             }
+             
+        }
+        HorizontalLayout
+        {
+            padding: 10px;
+            alignment: end;
+            
+            HorizontalLayout 
+            {
+                alignment: start;
+                VerticalLayout 
+                {         
+                        alignment: start;
+                        LineEdit 
+                        {
+                            placeholder-text: "search in current";
+                        }
+                        HorizontalLayout 
+                        {
+                            alignment: center;
+                            VerticalLayout 
+                            {
+                                padding-left: 10px;
+                                CheckBox 
+                                {
+                                    text: "file";
+                                }
+                                CheckBox 
+                                {
+                                    text: "folder";
+                                    
+                                }
+                                LineEdit 
+                                {
+                                   width: 10%;
+                                   placeholder-text: "extension";
+                                }
+                            }
+                           
+                        }
+                        
+                }
+            }
+           
+        }
+      
+    }
+    HorizontalLayout 
+    {
+        alignment: start;
+        VerticalLayout 
+        {
+            
+            width: 80%;
+            alignment: end;
+            StandardListView 
+            {
+                height: 91%;
+                
+                model: [ 
+                    { text: "Blue"}, { text: "Red" }, { text: "Green" },
+                    { text: "Yellow" }, { text: "Black"}, { text: "White"},
+                    { text: "Magenta" }, { text: "Cyan" },
+                ];
+            }
+        }
+       
+    
+        
+    }
+} 
