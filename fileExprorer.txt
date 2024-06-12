@@ -1,5 +1,5 @@
 File explorer:
-USING {silent rust(nie wiem jeszcze czy na pewno), }
+
 Functionality
 A) finding with clicking on folders and buttons to return 
 B) finding with name

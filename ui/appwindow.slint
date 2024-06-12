@@ -2,23 +2,71 @@ import { CheckBox,VerticalBox,LineEdit,ListView, Button, ComboBox, StandardListV
 
 export component AppWindow inherits Window 
 {
-    callback request-increase-value();
     
+     // Funkcja ustawiająca model danych dla StandardListView
+     public function setModel(x:[StandardListViewItem])
+    {
+       
+        list_data = x;
+        
+    }
+    public function checkIsBothTrue(x:bool,z:bool) -> bool
+    {
+            if (x== true && z ==true)
+            {
+                root.both();
+                true;
+            }
+            else 
+            {
+                false
+            }
+    }
+    public function checkIsBothFalse(x:bool,z:bool) -> bool
+    {
+            if (x== false && z ==false)
+            {
+                root.both();
+                true;
+            }
+            else 
+            {
+                false
+            }
+    }
+    public function reverse(x: bool) -> bool {
+        return !x;
+    }
+     callback getFiles() ->[StandardListViewItem];
+     callback onlyFiles()->[StandardListViewItem];
+     callback onlyCatalogs()->[StandardListViewItem];
+     callback both()->[StandardListViewItem];
+     property <[StandardListViewItem]> list_data;
+     property <bool> box1:false;
+     property <bool> box2:false;
+     max-width: 950px;
+     min-width: 830px;
+     preferred-height: 400px;
    
-    max-width: 950px;
-    min-width:830px;
-    preferred-height: 400px;
     VerticalLayout
     {
         HorizontalLayout 
         {
             Button 
              {
-               
+               clicked => 
+               {
+                
+                setModel( root.getFiles());
+                
+               }
              }
             Button 
              {
-                
+                clicked => 
+                {
+                    root.onlyFiles()
+                }
              }
              
         }
@@ -46,11 +94,55 @@ export component AppWindow inherits Window
                                 CheckBox 
                                 {
                                     text: "file";
+                                  
+                                    toggled => 
+                                    {
+                                       
+                                       box1 =  reverse(box1);
+                                        if (checkIsBothTrue(box1,box2))
+                                        {
+                                            setModel( root.both() )
+                                        }
+                                        else if(box1 == true)
+                                        {
+                                            setModel(  root.onlyFiles());
+                                        }
+                                        else if (box1 == false && box2 == false)
+                                        {
+                                            setModel(root.getFiles())
+                                        }
+                                        else {
+                                            setModel(  root.onlyCatalogs());
+                                        }
+                                        
+                                    }
                                 }
                                 CheckBox 
                                 {
                                     text: "folder";
                                     
+                                    toggled => 
+                                    {
+                                       box2 = reverse(box2);
+                                       if (checkIsBothTrue(box1,box2))
+                                       {
+                                        setModel(root.getFiles())
+                                       }
+                                       else if (box2 ==true )
+                                        {
+                                            setModel( root.onlyCatalogs() )
+                                        }
+                                        else if (box1 == false && box2 == false)
+                                        {
+                                            setModel(root.getFiles())
+                                        }
+                                        else 
+                                        {
+                                            setModel( root.onlyFiles());
+                                        }
+                                        
+                                      
+                                    }
                                 }
                                 LineEdit 
                                 {
@@ -78,12 +170,9 @@ export component AppWindow inherits Window
             StandardListView 
             {
                 height: 91%;
+               model: list_data;
+            
                 
-                model: [ 
-                    { text: "Blue"}, { text: "Red" }, { text: "Green" },
-                    { text: "Yellow" }, { text: "Black"}, { text: "White"},
-                    { text: "Magenta" }, { text: "Cyan" },
-                ];
             }
         }
        
