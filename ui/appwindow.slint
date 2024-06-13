@@ -14,7 +14,7 @@ export component AppWindow inherits Window
     {
             if (x== true && z ==true)
             {
-                root.both();
+                root.getFiles();
                 true;
             }
             else 
@@ -26,7 +26,7 @@ export component AppWindow inherits Window
     {
             if (x== false && z ==false)
             {
-                root.both();
+                root.getFiles();
                 true;
             }
             else 
@@ -40,20 +40,124 @@ export component AppWindow inherits Window
      callback getFiles() ->[StandardListViewItem];
      callback onlyFiles()->[StandardListViewItem];
      callback onlyCatalogs()->[StandardListViewItem];
-     callback both()->[StandardListViewItem];
      callback moveForward(StandardListViewItem, bool , bool)->[StandardListViewItem];
      callback moveBack(bool, bool)->[StandardListViewItem];
      callback openFile(StandardListViewItem);
+     callback deleteFile(StandardListViewItem);
      property <[StandardListViewItem]> list_data;
      property <bool> box1:false;
      property <bool> box2:false;
      max-width: 950px;
      min-width: 830px;
      preferred-height: 400px;
-   
-     popup := PopupWindow {
-        Rectangle { height:100%; width: 100%; background: yellow; }
-        x: 20px; y: 20px; height: 50px; width: 50px;
+    addPopup :=  PopupWindow
+    {
+        close-on-click: false;
+        Rectangle 
+        {
+            
+            VerticalLayout 
+            {
+                    padding-top: 20px;
+                alignment: start;
+                LineEdit 
+                {
+                    
+                    placeholder-text: "file name";
+                }
+            }
+            VerticalLayout 
+            {
+                alignment: center;
+               dir := CheckBox 
+                {
+                    text: "dir";
+                }
+                file := CheckBox 
+                {
+                    text: "file";
+                }
+            }
+            VerticalLayout 
+            {
+                padding-top: 100px;
+                alignment: center;
+                Button 
+                {
+                    clicked => 
+                    {
+                        addPopup.close();
+                    }
+                    text: "back";
+                }
+            }
+            
+        }
+        x: root.width / 2 - 170px;
+        y: root.height / 5 ;
+        height: 200px;
+        width: 300px;
+    }
+     deleteFilePopup := PopupWindow {
+        Rectangle { 
+            
+            border-radius: 5px;
+            
+            VerticalLayout {
+                alignment: end;
+                height: 100%;  // Ensure the layout takes the full height of the rectangle
+                padding: 10px;  // Add some padding for better spacing
+    
+                Text {
+                    height: 50%;
+                    text: "Are you sure you want to delete the file/dir?";
+                    horizontal-alignment: center;  // Center the text horizontally
+                    vertical-alignment: center; 
+                    font-size: 18px;   // Center the text vertically
+                }
+                
+                VerticalLayout {
+                    height: 50%;  // Ensure this layout takes up the remaining height
+                    spacing: 10px; // Add some spacing between buttons
+                    alignment: center;  // Center the buttons horizontally
+                    
+                    Button {
+                        text: "Yes";
+                        clicked => 
+                        {
+                            root.deleteFile(list_data[listView.current-item]);
+                           
+                            if (checkIsBothTrue(box1,box2))
+                            {
+                                setModel( root.getFiles() )
+                            }
+                            else if(box1 == true)
+                            {
+                                setModel(  root.onlyFiles());
+                            }
+                            else if (box1 == false && box2 == false)
+                            {
+                                setModel(root.getFiles())
+                            }
+                            else {
+                                setModel(  root.onlyCatalogs());
+                            }
+                        }
+                    }
+                    Button {
+                        text: "No";
+                        clicked => 
+                        {
+                           deleteFilePopup.close();
+                        }
+                    }
+                }
+            }
+        }
+        x: root.width / 2 - 150px;
+        y: root.height / 5 - 50px;
+        height: 200px;
+        width: 300px;
     }
     VerticalLayout
     {
@@ -66,7 +170,6 @@ export component AppWindow inherits Window
                {
                 
                 setModel( root.moveBack(box1,box2));
-                
                }
               
              }
@@ -74,20 +177,18 @@ export component AppWindow inherits Window
              {
                 clicked => 
                 {
+                   
                    if(listView.current-item > -1)
                    {
                     setModel(root.moveForward(list_data[listView.current-item],box1,box2));
                    }
-
                 }
              }
              
         }
         HorizontalLayout
         {
-            padding: 10px;
             alignment: end;
-            
             HorizontalLayout 
             {
                 alignment: start;
@@ -103,6 +204,7 @@ export component AppWindow inherits Window
                             alignment: center;
                             VerticalLayout 
                             {
+                                spacing: 6px;
                                 padding-left: 10px;
                                 CheckBox 
                                 {
@@ -114,7 +216,7 @@ export component AppWindow inherits Window
                                        box1 =  reverse(box1);
                                         if (checkIsBothTrue(box1,box2))
                                         {
-                                            setModel( root.both() )
+                                            setModel( root.getFiles() )
                                         }
                                         else if(box1 == true)
                                         {
@@ -170,32 +272,41 @@ export component AppWindow inherits Window
                                             root.openFile(list_data[listView.current-item])
                                     }
                                 }
-                            }
-                           
-                        }
-                        
+                                Button 
+                                {
+                                    text: "delte";
+                                    clicked => 
+                                    {
+                                        deleteFilePopup.show();
+                                    }
+                                }
+                                Button 
+                                {
+                                    text: "add";
+                                    clicked => 
+                                    {
+                                      addPopup.show();
+                                    }
+                                }
+                            }  
+                        } 
                 }
             }
-           
-        }
-      
+        } 
     }
     HorizontalLayout 
     {
         alignment: start;
         VerticalLayout 
-        {
-           
+        { 
             width: 80%;
             alignment: end;
             listView:=   StandardListView 
             {
                 height: 91%;
                 model: list_data;
-                
+  
             }
         }
-        
-   
     }
 } 

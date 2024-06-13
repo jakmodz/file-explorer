@@ -4,6 +4,7 @@ pub mod fileSystem
     use open;
     use slint::VecModel;
     use slint::StandardListViewItem;
+    use std::path;
     use std::path::PathBuf;
     use std::path::{Path};
     
@@ -31,33 +32,26 @@ pub mod fileSystem
         None => None,
     }
     }
-    pub fn isFile(&self,name : &String) -> bool
-    {
-        let tring:String =  self.path.to_string()+name;
-        
-        let path_to_check = Path::new(&tring);
-        if path_to_check.is_file() 
-        {
-            return true;    
-        }
-        else 
-        {
-            false    
-        }
-    }
+    
     pub fn joinPath(&self,fileName: &String) -> String {
         let base_path = Path::new(&self.path);
         let new_path = base_path.join(fileName);
         new_path.to_string_lossy().to_string()
     }
     pub fn removeLastDir(&mut self)
-    {
-        let path = Path::new(&self.path);
+    {   if self.path  == "/"
+        {
+            return;
+        }
+        else
+        {
+            let path = Path::new(&self.path);
        
-        let parent_path = path.parent().unwrap_or(Path::new(""));
-        if let Some(parent_str) = parent_path.to_str() {
+            let parent_path = path.parent().unwrap_or(Path::new(""));
+            if let Some(parent_str) = parent_path.to_str() {
             self.path = parent_str.to_owned();
-        } 
+            } 
+        }
     }
     pub fn checkModel(&self, box1:bool,box2:bool) -> VecModel<StandardListViewItem>
     {
@@ -76,7 +70,20 @@ pub mod fileSystem
         open::that(path);
 
     }
-   
+    pub fn isFile(path: &String,name : &String) -> bool
+    {
+        let tring:String =  path.to_string()+"/"+name;
+        
+        let path_to_check = Path::new(&tring);
+        if path_to_check.is_file() 
+        {
+            return true;    
+        }
+        else 
+        {
+            false    
+        }
+    }
     
    fn listAll(path: &String) -> Vec<Entry>
     {
