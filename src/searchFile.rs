@@ -3,13 +3,13 @@
 pub mod fileSystem
 {
     
-    use std::string;
+    use std::iter::Cloned;
+    use std::{clone, path, string};
     use std::path::{Path,Component};
     
-   pub struct fileSystem
+   pub struct  fileSystem 
     {
-      pub Path: String,
-      pub CurrentPath: String,
+      pub path: String,
       pub root: char
     }
     pub enum Entry {
@@ -18,8 +18,43 @@ pub mod fileSystem
     }
     impl fileSystem 
     {
-      
-      
+        pub fn new(path:  String) -> Self {
+           
+            let root = '/';
+            fileSystem {path , root }
+        }
+    pub fn getParrentPath(&self) ->Option<String>
+    {
+        let path = Path::new(&self.path);
+    match path.parent() 
+    {
+        Some(parent) => parent.to_str().map(|s| s.to_string()),
+        None => None,
+    }
+    }
+    pub fn isFile(&self,name : &String) -> bool
+    {
+        let tring:String =  self.path.to_string()+name;
+        
+        let path_to_check = Path::new(&tring);
+        if path_to_check.is_file() 
+        {
+            return true;    
+        }
+        else 
+        {
+            false    
+        }
+    }
+    pub fn join_path(&self,fileName: &String) -> String {
+        let base_path = Path::new(&self.path);
+        let new_path = base_path.join(fileName);
+        new_path.to_string_lossy().to_string()
+    }
+    pub fn getPath (&self)->&String
+    {
+        &self.path
+    }
     }
    
     
@@ -47,10 +82,10 @@ pub mod fileSystem
      
       vec
     }
-    pub fn getAll(path: &String)-> Vec<String>
+    pub fn getAll(path:String )-> Vec<String>
     {
      let mut list:Vec<String> = Vec::new();
-        let entries =  listAll(path);
+        let entries =  listAll(&path);
         for entry in entries {
          match entry {
              Entry::File(name) => list.push(name),
@@ -60,10 +95,10 @@ pub mod fileSystem
       list
     
     }
-    pub fn getCatalogs(path: &String) -> Vec<String>
+    pub fn getCatalogs(path:String) -> Vec<String>
     {
         let mut catalogs:Vec<String> = Vec::new();
-        let entries =  listAll(path);
+        let entries =  listAll(&path);
         for entry in entries {
          match entry {
              Entry::File(name) => {}
@@ -73,10 +108,10 @@ pub mod fileSystem
        catalogs
     }
     
-    pub fn getFiles(path: &String) -> Vec<String>
+    pub fn getFiles(path: String) -> Vec<String>
     {
      let mut files:Vec<String> = Vec::new();
-     let entries =  listAll(path);
+     let entries =  listAll(&path);
      for entry in entries {
       match entry {
           Entry::File(name) => files.push(name),

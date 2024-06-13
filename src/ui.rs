@@ -12,7 +12,7 @@
         }
         
         pub fn create_model(vec: &Vec<String>) -> VecModel<StandardListViewItem> {
-            let mut model = VecModel::default();
+            let  model = VecModel::default();
             
             // Populate the model
             for text in vec.iter() {
