@@ -13,7 +13,7 @@ slint::include_modules!();
 fn main() {
    let main_window = AppWindow::new().unwrap();
 
-  let file_system = Arc::new(Mutex::new(fileSystem::new(String::from("c://"))));
+  let file_system = Arc::new(Mutex::new(fileSystem::new(String::from("/"))));
 
   {
       let file_system = Arc::clone(&file_system);
@@ -53,11 +53,22 @@ fn main() {
           let mut fs = file_system.lock().unwrap();
           let file_name = item.text.to_string();
           if !fs.isFile(&file_name) {
-             fs.path =  fs.join_path(&file_name);
+             fs.path =  fs.joinPath(&file_name);
           }
           print!("{}", fs.path);
           ModelRc::new(create_model(&getAll(fs.path.clone())))
       });
+
+  }
+  {
+    let file_system = Arc::clone(&file_system);
+    main_window.on_moveBack(move ||
+    {
+        let mut fs = file_system.lock().unwrap();
+        fs.removeLastDir();
+        ModelRc::new(create_model(&getAll(fs.path.clone())))
+    }
+    );
   }
   
 

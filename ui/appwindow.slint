@@ -42,18 +42,22 @@ export component AppWindow inherits Window
      callback onlyCatalogs()->[StandardListViewItem];
      callback both()->[StandardListViewItem];
      callback moveForward(StandardListViewItem)->[StandardListViewItem];
-     callback moveBack();
-     callback on_item_pointer_event(int);
+     callback moveBack()->[StandardListViewItem];
+     
      property <[StandardListViewItem]> list_data;
      property <bool> box1:false;
      property <bool> box2:false;
-     property <int> index;
      max-width: 950px;
      min-width: 830px;
      preferred-height: 400px;
    
+     popup := PopupWindow {
+        Rectangle { height:100%; width: 100%; background: yellow; }
+        x: 20px; y: 20px; height: 50px; width: 50px;
+    }
     VerticalLayout
     {
+        
         HorizontalLayout 
         {
             Button 
@@ -61,18 +65,20 @@ export component AppWindow inherits Window
                clicked => 
                {
                 
-                setModel( root.getFiles());
+                setModel( root.moveBack());
                 
                }
+              
              }
             Button 
              {
                 clicked => 
                 {
-                   
-                      setModel(root.moveForward(list_data[index]));
-                    
-                 
+                   if(listView.current-item > -1)
+                   {
+                    setModel(root.moveForward(list_data[listView.current-item]));
+                   }
+
                 }
              }
              
@@ -147,8 +153,7 @@ export component AppWindow inherits Window
                                         {
                                             setModel( root.onlyFiles());
                                         }
-                                        
-                                      
+
                                     }
                                 }
                                 LineEdit 
@@ -172,21 +177,16 @@ export component AppWindow inherits Window
         alignment: start;
         VerticalLayout 
         {
-            
+           
             width: 80%;
             alignment: end;
-            StandardListView 
+            listView:=   StandardListView 
             {
                 height: 91%;
                 model: list_data;
                 
-              
-              
-                
             }
         }
-       
-    
-        
+   
     }
 } 

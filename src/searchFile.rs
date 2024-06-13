@@ -1,16 +1,14 @@
-
-
 pub mod fileSystem
 {
     
-    use std::iter::Cloned;
+   
     use std::{clone, path, string};
     use std::path::{Path,Component};
     
    pub struct  fileSystem 
     {
       pub path: String,
-      pub root: char
+     
     }
     pub enum Entry {
         File(String),
@@ -20,8 +18,8 @@ pub mod fileSystem
     {
         pub fn new(path:  String) -> Self {
            
-            let root = '/';
-            fileSystem {path , root }
+            
+            fileSystem {path  }
         }
     pub fn getParrentPath(&self) ->Option<String>
     {
@@ -46,14 +44,19 @@ pub mod fileSystem
             false    
         }
     }
-    pub fn join_path(&self,fileName: &String) -> String {
+    pub fn joinPath(&self,fileName: &String) -> String {
         let base_path = Path::new(&self.path);
         let new_path = base_path.join(fileName);
         new_path.to_string_lossy().to_string()
     }
-    pub fn getPath (&self)->&String
+    pub fn removeLastDir(&mut self)
     {
-        &self.path
+        let path = Path::new(&self.path);
+       
+        let parent_path = path.parent().unwrap_or(Path::new(""));
+        if let Some(parent_str) = parent_path.to_str() {
+            self.path = parent_str.to_owned();
+        } 
     }
     }
    
@@ -120,4 +123,5 @@ pub mod fileSystem
     }
     files
     }
+    
 }
