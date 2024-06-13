@@ -19,7 +19,6 @@ fn main() {
           ModelRc::new(create_model(&getAll(fs.path.clone())))
       });
   }
-
   {
       let file_system = Arc::clone(&file_system);
       main_window.on_onlyFiles(move || {
@@ -27,7 +26,6 @@ fn main() {
           ModelRc::new(create_model(&getFiles(fs.path.clone())))
       });
   }
-
   {
       let file_system = Arc::clone(&file_system);
       main_window.on_onlyCatalogs(move || {
@@ -43,13 +41,11 @@ fn main() {
           ModelRc::new(create_model(&getAll(fs.path.clone())))
       });
   }
-
   {
       let file_system = Arc::clone(&file_system);
       main_window.on_moveForward(move |item: StandardListViewItem| {
           let mut fs = file_system.lock().unwrap();
-          let file_name = item.text.to_string();
-          
+          let file_name = item.text.to_string();  
           if !fs.isFile(&file_name) {
              fs.path =  fs.joinPath(&file_name);
             
