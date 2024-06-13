@@ -2,7 +2,7 @@ pub mod ui;
 mod searchFile;
 use std::sync::{Arc,Mutex};
 use slint::StandardListViewItem;
-use searchFile::fileSystem::{fileSystem, getAll, getCatalogs, getFiles, getPathToFile, openFile};
+use searchFile::fileSystem::{fileSystem, getAll, getCatalogs, getFiles, getPathToFile};
 use slint::{ModelRc};
 use ui::uic::{*};
 slint::include_modules!();
@@ -61,7 +61,7 @@ fn main() {
     let file_system = Arc::clone(&file_system);
     main_window.on_openFile(move |item:StandardListViewItem |
     {
-        let mut fs = file_system.lock().unwrap();
+        let fs = file_system.lock().unwrap();
         let file_name = item.text.to_string();
             
             open::that(getPathToFile(&fs.path, &file_name));

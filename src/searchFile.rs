@@ -6,7 +6,7 @@ pub mod fileSystem
     use slint::StandardListViewItem;
     use std::path::PathBuf;
     use std::path::{Path};
-    use slint::{ModelRc};
+    
    pub struct  fileSystem 
     {
       pub path: String,
