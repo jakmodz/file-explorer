@@ -1,14 +1,12 @@
 pub mod fileSystem
 {
-    
-   
-    use std::{clone, path, string};
-    use std::path::{Path,Component};
+    use open;
+    use std::path::PathBuf;
+    use std::path::{Path};
     
    pub struct  fileSystem 
     {
       pub path: String,
-     
     }
     pub enum Entry {
         File(String),
@@ -58,6 +56,11 @@ pub mod fileSystem
             self.path = parent_str.to_owned();
         } 
     }
+}
+    pub fn openFile(path : &String)
+    {
+        open::that(path);
+
     }
    
     
@@ -122,6 +125,14 @@ pub mod fileSystem
       }
     }
     files
+}
+    pub fn getPathToFile(path:&String, fileName: &String) ->String
+    {
+            let mut path = PathBuf::from(&path);
+            path.push(fileName);
+            let path_str = path.to_string_lossy().to_string();
+            path_str
     }
     
 }
+

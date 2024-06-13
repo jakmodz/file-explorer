@@ -43,7 +43,7 @@ export component AppWindow inherits Window
      callback both()->[StandardListViewItem];
      callback moveForward(StandardListViewItem)->[StandardListViewItem];
      callback moveBack()->[StandardListViewItem];
-     
+     callback openFile(StandardListViewItem);
      property <[StandardListViewItem]> list_data;
      property <bool> box1:false;
      property <bool> box2:false;
@@ -162,6 +162,14 @@ export component AppWindow inherits Window
                                    placeholder-text: "extension";
                                    enabled: box1;
                                 }
+                                Button 
+                                {
+                                    text: "open file";
+                                    clicked => 
+                                    {
+                                            root.openFile(list_data[listView.current-item])
+                                    }
+                                }
                             }
                            
                         }
@@ -187,6 +195,7 @@ export component AppWindow inherits Window
                 
             }
         }
+        
    
     }
 } 
