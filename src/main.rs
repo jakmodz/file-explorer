@@ -1,6 +1,5 @@
 pub mod ui;
 mod searchFile;
-
 use std::sync::{Arc,Mutex};
 use slint::StandardListViewItem;
 use searchFile::fileSystem::{fileSystem, getAll, getCatalogs, getFiles, getPathToFile, openFile};
@@ -8,8 +7,7 @@ use slint::{ModelRc};
 use ui::uic::{*};
 slint::include_modules!();
 
-fn main() {
-    
+fn main() {    
    let main_window = AppWindow::new().unwrap();
    let file_system = Arc::new(Mutex::new(fileSystem::new(String::from("/"))));
   {
@@ -43,15 +41,18 @@ fn main() {
   }
   {
       let file_system = Arc::clone(&file_system);
-      main_window.on_moveForward(move |item: StandardListViewItem| {
+      main_window.on_moveForward(move |item: StandardListViewItem, box1:bool, box2:bool| 
+        {
           let mut fs = file_system.lock().unwrap();
           let file_name = item.text.to_string();  
-          if !fs.isFile(&file_name) {
+          
+          if !fs.isFile(&file_name) 
+          {
              fs.path =  fs.joinPath(&file_name);
             
           }
-
-          ModelRc::new(create_model(&getAll(fs.path.clone())))
+          
+          ModelRc::new(fs.checkModel(box1, box2))  
       });
 
   }
@@ -69,18 +70,15 @@ fn main() {
   }
   {
     let file_system = Arc::clone(&file_system);
-    main_window.on_moveBack(move ||
+    main_window.on_moveBack(move |box1:bool, box2:bool|
     {
         let mut fs = file_system.lock().unwrap();
         fs.removeLastDir();
-        
-        ModelRc::new(create_model(&getAll(fs.path.clone())))
-        
+
+        ModelRc::new(fs.checkModel(box1, box2))   
     }
     );
   }
-  
-
     main_window.run().unwrap();
 }
 

@@ -41,8 +41,8 @@ export component AppWindow inherits Window
      callback onlyFiles()->[StandardListViewItem];
      callback onlyCatalogs()->[StandardListViewItem];
      callback both()->[StandardListViewItem];
-     callback moveForward(StandardListViewItem)->[StandardListViewItem];
-     callback moveBack()->[StandardListViewItem];
+     callback moveForward(StandardListViewItem, bool , bool)->[StandardListViewItem];
+     callback moveBack(bool, bool)->[StandardListViewItem];
      callback openFile(StandardListViewItem);
      property <[StandardListViewItem]> list_data;
      property <bool> box1:false;
@@ -65,7 +65,7 @@ export component AppWindow inherits Window
                clicked => 
                {
                 
-                setModel( root.moveBack());
+                setModel( root.moveBack(box1,box2));
                 
                }
               
@@ -76,7 +76,7 @@ export component AppWindow inherits Window
                 {
                    if(listView.current-item > -1)
                    {
-                    setModel(root.moveForward(list_data[listView.current-item]));
+                    setModel(root.moveForward(list_data[listView.current-item],box1,box2));
                    }
 
                 }

@@ -1,9 +1,12 @@
 pub mod fileSystem
 {
+    use crate::create_model;
     use open;
+    use slint::VecModel;
+    use slint::StandardListViewItem;
     use std::path::PathBuf;
     use std::path::{Path};
-    
+    use slint::{ModelRc};
    pub struct  fileSystem 
     {
       pub path: String,
@@ -55,6 +58,17 @@ pub mod fileSystem
         if let Some(parent_str) = parent_path.to_str() {
             self.path = parent_str.to_owned();
         } 
+    }
+    pub fn checkModel(&self, box1:bool,box2:bool) -> VecModel<StandardListViewItem>
+    {
+        if box1 
+        {
+          return create_model(&getFiles(self.path.clone()));
+        }
+        else 
+        {
+          return  create_model(&getCatalogs(self.path.clone()));
+        }
     }
 }
     pub fn openFile(path : &String)
