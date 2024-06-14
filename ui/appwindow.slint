@@ -34,7 +34,7 @@ export component AppWindow inherits Window
         return !x;
     }
      callback getFiles() ->[StandardListViewItem];
-     callback getItemsByName(string)->[StandardListViewItem];
+     callback getItemsByName(string,bool,bool)->[StandardListViewItem];
      callback onlyFiles()->[StandardListViewItem];
      callback onlyCatalogs()->[StandardListViewItem];
      callback moveForward(StandardListViewItem, bool , bool)->[StandardListViewItem];
@@ -48,6 +48,28 @@ export component AppWindow inherits Window
      max-width: 950px;
      min-width: 830px;
      preferred-height: 400px;
+    loadingPopup := PopupWindow
+    {
+        VerticalLayout 
+        {
+            alignment: center;
+            Text 
+            {
+                text: "Is searching for file. Wait";
+                font-size: 20px;
+                color: red;
+
+            }
+
+        }
+        
+        x: root.width / 2 - 170px;
+        y: root.height / 5 ;
+        height: 200px;
+        width: 300px;
+    }
+     
+      
     addPopup :=  PopupWindow
     {
         close-on-click: false;
@@ -115,7 +137,8 @@ export component AppWindow inherits Window
         height: 200px;
         width: 300px;
     }
-     deleteFilePopup := PopupWindow {
+     deleteFilePopup := PopupWindow 
+     {
         Rectangle { 
             
             border-radius: 5px;
@@ -176,6 +199,7 @@ export component AppWindow inherits Window
         height: 200px;
         width: 300px;
     }
+   
     VerticalLayout
     {
         
@@ -213,12 +237,14 @@ export component AppWindow inherits Window
                 VerticalLayout 
                 {         
                         alignment: start;
-                        LineEdit 
+                        fileNameWithEx:= LineEdit 
                         {
                             placeholder-text: "search in current";
                             accepted => 
                             {
-                                //setModel(root.getItemsByName(fileName.text));
+                                loadingPopup.show();
+                                setModel(root.getItemsByName(fileNameWithEx.text,box1,box2));
+                                loadingPopup.close();
                             }
                         }
                         HorizontalLayout 
@@ -280,17 +306,13 @@ export component AppWindow inherits Window
 
                                     }
                                 }
-                                LineEdit 
-                                {
-                                   width: 10%;
-                                   placeholder-text: "extension";
-                                   enabled: box1;
-                                }
+                               
                                 Button 
                                 {
                                     text: "open file";
                                     clicked => 
                                     {
+                                        
                                             root.openFile(list_data[listView.current-item])
                                     }
                                 }

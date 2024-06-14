@@ -1,11 +1,13 @@
 pub mod ui;
 mod filesAddAndDelete;
 mod findingFile;
-use std::sync::{Arc,Mutex};
+use std::{path::Path, sync::{Arc,Mutex}};
 use filesAddAndDelete::filesAddAndDelete::{addFinal, deleteFile, deltetDir};
 use slint::{SharedString, StandardListViewItem};
 use searchFile::fileSystem::{fileSystem, getAll, getCatalogs, getFiles, getPathToFile, isFile};
 use slint::{ModelRc};
+
+use findingFile::{findingFile::find_specific_file_in_dir, *};
 use ui::uic::{*};
 slint::include_modules!();
 mod searchFile;
@@ -103,6 +105,32 @@ fn main()
       
         addFinal(&fs.path, &  fileName.to_string(), fileOrDir);
     });
+  }
+  {
+    let file_system = Arc::clone(&file_system);
+    main_window.on_getItemsByName(move |fileName: SharedString,box1:bool,box2:bool|
+    {
+        let mut fs = file_system.lock().unwrap();
+
+        let mut  d  = String::from("");
+        let v =   find_specific_file_in_dir(Path::new(&fs.path), &fileName.to_string());
+       match v 
+        {
+            Some(path) =>   d =  path,
+            
+            None =>  {}//return ModelRc::new(fs.checkModel(box1, box2))
+        }
+        if d.len() > 0  
+        {
+             fs.path = d;
+             fs.removeLastDir();
+             return   ModelRc::new(create_model_with_single_item(&fileName.to_string()));
+        }
+       
+        ModelRc::new(fs.checkModel(box1, box2))
+    }
+    );
+
   }
     main_window.run().unwrap();
 }

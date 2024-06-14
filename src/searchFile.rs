@@ -64,6 +64,10 @@ pub mod fileSystem
         {
           return  create_model(&getAll(self.path.clone()));
         }
+        else if box1 && box2
+        {
+            return  create_model(&getAll(self.path.clone()));
+        }
         else 
         {
             return  create_model(&getCatalogs(self.path.clone())); 
