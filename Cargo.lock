@@ -2530,6 +2530,7 @@ name = "my-project"
 version = "0.1.0"
 dependencies = [
  "open",
+ "rayon",
  "slint",
  "slint-build",
 ]

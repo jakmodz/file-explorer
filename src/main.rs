@@ -1,5 +1,6 @@
 pub mod ui;
 mod filesAddAndDelete;
+mod findingFile;
 use std::sync::{Arc,Mutex};
 use filesAddAndDelete::filesAddAndDelete::{addFinal, deleteFile, deltetDir};
 use slint::{SharedString, StandardListViewItem};

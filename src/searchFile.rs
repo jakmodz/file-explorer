@@ -12,7 +12,8 @@ pub mod fileSystem
     {
       pub path: String,
     }
-    pub enum Entry {
+    pub enum Entry 
+    {
         File(String),
         Directory(String),
     }
