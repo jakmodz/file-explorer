@@ -7,9 +7,8 @@ pub mod filesAddAndDelete
         let res = remove_file(path);
         match res
        {
-           Ok(File) => print!("deleted  file "),
-           Err(e) => print!("{:?}",e)
-       }
+        Ok(File) => {},
+        Err(e) => {}       }
     }
     pub fn deltetDir(path:&String)
     {
@@ -23,8 +22,8 @@ pub mod filesAddAndDelete
        let res =  File::create(finalPath);
        match res
        {
-           Ok(File) => print!("created file "),
-           Err(e) => print!("{:?}",e)
+           Ok(File) => {},
+           Err(e) => {}
        }
     }
     pub fn addDir(path:&String,name: &String)
@@ -33,9 +32,20 @@ pub mod filesAddAndDelete
        let res =  fs::create_dir(finalPath);
        match res
        {
-           Ok(File) => print!("created dir "),
-           Err(e) => print!("{:?}",e)
+        Ok(File) => {},
+        Err(e) => {}
        }
+    }
+    pub fn addFinal(path: &String,fileName: &String,fileOrDir:bool)
+    {
+        if fileOrDir 
+        {
+            addFile(path, fileName);     
+        }
+        else
+        {
+            addDir(path, fileName);
+        }
     }
     
 }

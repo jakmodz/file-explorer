@@ -1,8 +1,8 @@
 pub mod ui;
 mod filesAddAndDelete;
 use std::sync::{Arc,Mutex};
-use filesAddAndDelete::filesAddAndDelete::{deleteFile, deltetDir};
-use slint::StandardListViewItem;
+use filesAddAndDelete::filesAddAndDelete::{addFinal, deleteFile, deltetDir};
+use slint::{SharedString, StandardListViewItem};
 use searchFile::fileSystem::{fileSystem, getAll, getCatalogs, getFiles, getPathToFile, isFile};
 use slint::{ModelRc};
 use ui::uic::{*};
@@ -93,6 +93,15 @@ fn main()
         }          
     }
     );
+  }
+  {
+    let file_system = Arc::clone(&file_system);
+    main_window.on_addFile(move |fileName:SharedString,fileOrDir:bool|
+    {
+        let mut fs = file_system.lock().unwrap();
+      
+        addFinal(&fs.path, &  fileName.to_string(), fileOrDir);
+    });
   }
     main_window.run().unwrap();
 }

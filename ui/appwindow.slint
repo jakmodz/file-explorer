@@ -1,14 +1,10 @@
-import { CheckBox,VerticalBox,LineEdit,ListView, Button, ComboBox, StandardListView} from "std-widgets.slint";
+import { CheckBox,VerticalBox,LineEdit,ListView, Button, ComboBox, StandardListView, Switch} from "std-widgets.slint";
 
 export component AppWindow inherits Window 
 {
-    
-     // Funkcja ustawiająca model danych dla StandardListView
      public function setModel(x:[StandardListViewItem])
     {
-       
-        list_data = x;
-        
+        list_data = x; 
     }
     public function checkIsBothTrue(x:bool,z:bool) -> bool
     {
@@ -38,12 +34,14 @@ export component AppWindow inherits Window
         return !x;
     }
      callback getFiles() ->[StandardListViewItem];
+     callback getItemsByName(string)->[StandardListViewItem];
      callback onlyFiles()->[StandardListViewItem];
      callback onlyCatalogs()->[StandardListViewItem];
      callback moveForward(StandardListViewItem, bool , bool)->[StandardListViewItem];
      callback moveBack(bool, bool)->[StandardListViewItem];
      callback openFile(StandardListViewItem);
      callback deleteFile(StandardListViewItem);
+     callback addFile(string, bool);
      property <[StandardListViewItem]> list_data;
      property <bool> box1:false;
      property <bool> box2:false;
@@ -60,20 +58,38 @@ export component AppWindow inherits Window
             {
                     padding-top: 20px;
                 alignment: start;
-                LineEdit 
+                fileName := LineEdit 
                 {
-                    
+                    accepted => 
+                    {
+                        root.addFile(fileName.text,fileOrDir.checked);
+                        if (checkIsBothTrue(box1,box2))
+                        {
+                            setModel( root.getFiles() )
+                        }
+                        else if(box1 == true)
+                        {
+                            setModel(  root.onlyFiles());
+                        }
+                        else if (box1 == false && box2 == false)
+                        {
+                            setModel(root.getFiles())
+                        }
+                        else {
+                            setModel(  root.onlyCatalogs());
+                        }
+                       // setModel(root.getItemsByName(fileName.text));
+                        addPopup.close();
+                    }
                     placeholder-text: "file name";
                 }
             }
             VerticalLayout 
             {
-                alignment: center;
-               dir := CheckBox 
-                {
-                    text: "dir";
-                }
-                file := CheckBox 
+                 padding-top: 65px;
+                alignment: start;
+              
+               fileOrDir := Switch 
                 {
                     text: "file";
                 }
@@ -81,11 +97,12 @@ export component AppWindow inherits Window
             VerticalLayout 
             {
                 padding-top: 100px;
-                alignment: center;
+                alignment: start;
                 Button 
                 {
                     clicked => 
                     {
+                        
                         addPopup.close();
                     }
                     text: "back";
@@ -164,6 +181,7 @@ export component AppWindow inherits Window
         
         HorizontalLayout 
         {
+            spacing: 7px;
             Button 
              {
                clicked => 
@@ -198,6 +216,10 @@ export component AppWindow inherits Window
                         LineEdit 
                         {
                             placeholder-text: "search in current";
+                            accepted => 
+                            {
+                                //setModel(root.getItemsByName(fileName.text));
+                            }
                         }
                         HorizontalLayout 
                         {
