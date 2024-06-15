@@ -99,13 +99,7 @@ pub mod findingFile
     pub fn find_file_with_rust_search_crate(path: &mut String, file_name: SharedString) -> VecModel<StandardListViewItem> {
         let file_name_str = file_name.to_string();
     
-    // Extract the file extension
-    let extension = Path::new(&file_name_str)
-        .extension()
-        .and_then(OsStr::to_str)
-        .unwrap_or_default()
-        .to_string();
-
+    
     let search = SearchBuilder::default()
         .location(&path)
         .search_input(&file_name)
@@ -114,8 +108,19 @@ pub mod findingFile
         .build()
         .collect::<Vec<String>>();
     
-    if !search.is_empty() {
+    if !search.is_empty()
+    {
+
         *path = search[0].clone();
+        let pathrr = Path::new(&path);
+       
+        let pathh = Path::new(&path);
+       
+        let parent_path = pathrr.parent().unwrap_or(Path::new(""));
+        if let Some(parent_str) = parent_path.to_str() 
+        {
+       *path = parent_str.to_owned();
+        } 
         return create_model_with_single_item(&file_name_str);
     }
     
