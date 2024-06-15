@@ -11,6 +11,6 @@ build = "build.rs"
 slint = "1.6"
 open = "3.2.0"
 rayon = "1.5"
-
+tokio = { version = "1.38.0", features = ["full"] }
 [build-dependencies]
 slint-build = "1.6"

@@ -2,20 +2,21 @@
 pub mod findingFile
 {
     use rayon::prelude::*;
+    use slint::SharedString;
     use std::fs;
+    use slint::{StandardListViewItem,VecModel};
     use std::path::{Path, PathBuf};
     use std::sync::mpsc;
-    use std::thread;
-    use std::path;
-   
+    use slint::ModelRc;
+    use crate::{create_model, create_model_with_single_item};
    use crate::searchFile::fileSystem::{*};
-    enum FileOption 
+   pub enum FileOption 
     {
        PATH(String),
        ERR(String)
 
     }
-    pub async  fn searchDirForFile(path:&String,fileName: &String) -> FileOption
+    pub fn searchDirForFile(path:&String,fileName: &String) -> String
     {
         let vec = getFiles(path.to_string());
         for file in vec.iter()
@@ -23,13 +24,14 @@ pub mod findingFile
             if file == fileName
             {
                 let finalPath: String = path.to_owned()+"/" +fileName;
-                return FileOption::PATH((finalPath));
+                return finalPath;
             }
         } 
-        FileOption::ERR(String::from("couldnt find file"))
+        return  "".to_string();
     }
     pub fn find_specific_file_in_dir(dir: &Path, target_file_name: &str) -> Option<String> {
-        if let Ok(entries) = fs::read_dir(dir) {
+        if let Ok(entries) = fs::read_dir(dir) 
+        {
             let paths: Vec<PathBuf> = entries
                 .filter_map(Result::ok)
                 .map(|entry| entry.path())
@@ -55,6 +57,43 @@ pub mod findingFile
         }
         None
     }
+    pub  fn doAll(path:&mut String,fileName:SharedString) ->VecModel<StandardListViewItem>
+    {
+         
+       let v  =  searchDirForFile(path,  &fileName.to_string()) ;
+       if v.len()> 0  
+       {
+           return create_model_with_single_item(&fileName.to_string());
+       }
+       else 
+       {
+            
+            let catalogs =  getCatalogs(path.clone());
+            for catalog in catalogs
+            {
+                let mut  string:String =String::new();
+                let mut  pathtem = path.clone() + "/"+&catalog;
+               let pathh =  PathBuf::from(path.clone());
+               match  find_specific_file_in_dir(&pathh, &fileName) 
+               {
+                   Some(p) => string= p,
+                   None=> string = String::from("")
+               };
+               if string.len() > 0
+               {
+                    *path = string;
+                    return (create_model_with_single_item(&fileName.to_string()));
+               }
+               else  
+               {
+                   continue;
+               }
+            } 
+            
+           create_model(&getAll(path.to_string()))
+       }
+       
+    } 
     }
 
  
