@@ -7,7 +7,7 @@ use slint::{SharedString, StandardListViewItem};
 use searchFile::fileSystem::{fileSystem, getAll, getCatalogs, getFiles, getPathToFile, isFile};
 use slint::{ModelRc};
 
-use findingFile::{findingFile::{doAll, find_specific_file_in_dir, searchDirForFile, FileOption}, *};
+use findingFile::findingFile::{ *};
 use ui::uic::{*};
 slint::include_modules!();
 mod searchFile;
@@ -113,7 +113,7 @@ async fn  main()
     {
         let mut fs = file_system.lock().unwrap();
 
-        return  ModelRc::new(doAll(&mut fs.path, fileName));
+        return  ModelRc::new(find_file_with_rust_search_crate(&mut fs.path, fileName));
     }
     );
 

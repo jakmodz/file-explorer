@@ -2,6 +2,7 @@
 pub mod findingFile
 {
     use rayon::prelude::*;
+    use rust_search::SearchBuilder;
     use slint::SharedString;
     use std::fs;
     use slint::{StandardListViewItem,VecModel};
@@ -82,7 +83,7 @@ pub mod findingFile
                if string.len() > 0
                {
                     *path = string;
-                    return (create_model_with_single_item(&fileName.to_string()));
+                    return create_model_with_single_item(&fileName.to_string());
                }
                else  
                {
@@ -92,8 +93,36 @@ pub mod findingFile
             
            create_model(&getAll(path.to_string()))
        }
-       
-    } 
     }
+    use std::ffi::OsStr;
+
+    pub fn find_file_with_rust_search_crate(path: &mut String, file_name: SharedString) -> VecModel<StandardListViewItem> {
+        let file_name_str = file_name.to_string();
+    
+    // Extract the file extension
+    let extension = Path::new(&file_name_str)
+        .extension()
+        .and_then(OsStr::to_str)
+        .unwrap_or_default()
+        .to_string();
+
+    let search = SearchBuilder::default()
+        .location(&path)
+        .search_input(&file_name)
+        .limit(1) // results to return
+        .strict()
+        .build()
+        .collect::<Vec<String>>();
+    
+    if !search.is_empty() {
+        *path = search[0].clone();
+        return create_model_with_single_item(&file_name_str);
+    }
+    
+    create_model(&getAll(path.to_string()))
+    }
+    
+    } 
+    
 
  
