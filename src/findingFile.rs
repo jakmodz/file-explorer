@@ -1,6 +1,7 @@
 
 pub mod findingFile
 {
+    
     use rayon::prelude::*;
     use rust_search::SearchBuilder;
     use slint::SharedString;
@@ -94,7 +95,6 @@ pub mod findingFile
            create_model(&getAll(path.to_string()))
        }
     }
-    use std::ffi::OsStr;
 
     pub fn find_file_with_rust_search_crate(path: &mut String, file_name: SharedString) -> VecModel<StandardListViewItem> {
         let file_name_str = file_name.to_string();
@@ -104,6 +104,7 @@ pub mod findingFile
         .location(&path)
         .search_input(&file_name)
         .limit(1) // results to return
+        //.ext(get_extension(&file_name_str))
         .strict()
         .build()
         .collect::<Vec<String>>();
@@ -120,13 +121,36 @@ pub mod findingFile
         if let Some(parent_str) = parent_path.to_str() 
         {
        *path = parent_str.to_owned();
-        } 
-        return create_model_with_single_item(&file_name_str);
+        }
+         let final_name = get_last_element_of_path(&search[0].clone());
+        return create_model_with_single_item(&final_name);
     }
     
     create_model(&getAll(path.to_string()))
     }
+    pub fn find_dir_with_rust_search_crate(path: &mut String, file_name: SharedString,box1:bool,box2:bool) -> VecModel<StandardListViewItem>
+    {
+        let file_name_str = file_name.to_string();
     
+    
+        let search = SearchBuilder::default()
+            .location(&path)
+            .search_input(&file_name_str)
+            .limit(1) // results to return
+            .strict()
+            .build()
+            .collect::<Vec<String>>();
+        
+        if !search.is_empty()
+        {
+     
+            *path = search[0].clone();
+            return checkModel(path, box1, box2);
+        }
+        
+        create_model(&getAll(path.to_string()))
+
+    }
     } 
     
 

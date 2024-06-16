@@ -34,7 +34,7 @@ export component AppWindow inherits Window
         return !x;
     }
      callback getFiles() ->[StandardListViewItem];
-     callback getItemsByName(string,bool,bool)->[StandardListViewItem];
+     callback getItemsByName(string,bool,bool,bool)->[StandardListViewItem];
      callback onlyFiles()->[StandardListViewItem];
      callback onlyCatalogs()->[StandardListViewItem];
      callback moveForward(StandardListViewItem, bool , bool)->[StandardListViewItem];
@@ -215,13 +215,17 @@ export component AppWindow inherits Window
                 VerticalLayout 
                 {         
                         alignment: start;
+                        switchFileOrDir := Switch 
+                        {
+                            text: "search for file or dir";
+                        }
                         fileNameWithEx:= LineEdit 
                         {
                             placeholder-text: "search in current";
                             accepted => 
                             {
                                
-                                setModel(root.getItemsByName(fileNameWithEx.text,box1,box2));
+                                setModel(root.getItemsByName(fileNameWithEx.text,box1,box2,switchFileOrDir.enabled));
                                
                             }
                         }

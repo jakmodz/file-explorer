@@ -11,8 +11,7 @@ use findingFile::findingFile::{ *};
 use ui::uic::{*};
 slint::include_modules!();
 mod searchFile;
-#[tokio::main]
-async fn  main() 
+fn  main() 
 {    
    let main_window = AppWindow::new().unwrap();
    let file_system = Arc::new(Mutex::new(fileSystem::new(String::from("/"))));
@@ -109,11 +108,20 @@ async fn  main()
   }
   {
     let file_system = Arc::clone(&file_system);
-    main_window.on_getItemsByName(move |fileName: SharedString,box1:bool,box2:bool|
+    main_window.on_getItemsByName(move |fileName: SharedString,box1:bool,box2:bool,switchStatment: bool|
     {
         let mut fs = file_system.lock().unwrap();
 
-        return  ModelRc::new(find_file_with_rust_search_crate(&mut fs.path, fileName));
+       if switchStatment 
+       {
+
+         return  ModelRc::new(find_file_with_rust_search_crate(&mut fs.path, fileName));   
+       }
+       else  
+       {
+
+        return  ModelRc::new(find_dir_with_rust_search_crate(&mut fs.path, fileName,box1,box2));
+       }
     }
     );
 

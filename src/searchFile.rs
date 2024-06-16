@@ -118,6 +118,14 @@ pub mod fileSystem
      
       vec
     }
+
+pub fn get_extension(file_name: &String) -> String {
+    let path = Path::new(file_name);
+    path.extension()
+        .and_then(|ext| ext.to_str())
+        .map(|ext_str| ext_str.to_string())
+        .unwrap_or_default()
+}
     pub fn getAll(path:String )-> Vec<String>
     {
      let mut list:Vec<String> = Vec::new();
@@ -130,6 +138,13 @@ pub mod fileSystem
      }
       list
     
+    }
+   pub fn get_last_element_of_path(path_str: &String) -> String {
+        let path = Path::new(path_str);
+        path.file_name()
+            .and_then(|name| name.to_str())
+            .map(|s| s.to_string())
+            .unwrap_or_default()
     }
     pub fn getCatalogs(path:String) -> Vec<String>
     {
@@ -163,6 +178,25 @@ pub mod fileSystem
             let path_str = path.to_string_lossy().to_string();
             path_str
     }
-    
+    pub fn checkModel(path: &String, box1:bool,box2:bool) -> VecModel<StandardListViewItem>
+    {
+        if box1 
+        {
+          return create_model(&getFiles(path.clone()));
+        }
+        else if !box1 && !box2 
+        {
+          return  create_model(&getAll(path.clone()));
+        }
+        else if box1 && box2
+        {
+            return  create_model(&getAll(path.clone()));
+        }
+        else 
+        {
+            return  create_model(&getCatalogs(path.clone())); 
+        }
+        
 }
 
+}
